@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { URL } from '../variables';
 
-export const uploadNewFile = (userContextDispatch, setProgress, setError, jwt, done, data) => {
+export const uploadNewFile = (setProgress, setError, jwt, done, data) => {
     const config = {
         headers: {
             'Content-Type': 'multipart/form-data',
@@ -17,13 +17,7 @@ export const uploadNewFile = (userContextDispatch, setProgress, setError, jwt, d
 
     axios.post(`${URL}/public/upload`, data, config)
         .then((res) => {
-            if (res.data.uploads) {
-                userContextDispatch({
-                    type: 'SET-UPLOADS',
-                    data: {
-                        uploads: res.data.uploads
-                    }
-                })
+            if (res.data.success) {
                 done();
             } else if (res.data.error) {
                 //failed to upload
@@ -46,31 +40,74 @@ export const uploadNewFile = (userContextDispatch, setProgress, setError, jwt, d
         });
 }
 
-export const deleteUploadFunc = (userContextDispatch, jwt, done, uploadId) => {
-    const config = {
-        headers: {
-            'authorization': 'bearer ' + jwt
+export const retriveUploads = (jwt) => {
+    return new Promise((resolve, reject) => {
+        const config = {
+            headers: {
+                'authorization': 'bearer ' + jwt
+            }
         }
-    }
 
-    axios.post(`${URL}/public/deleteupload`, {uploadId: uploadId}, config)
+        axios.get(`${URL}/public/getuploads`, config)
+            .then((res) => {
+                if (res.data.uploads) {
+                    resolve(res.data.uploads);
+                } else {
+                    reject(res.data.error ? res.data.error.message : "Server error")
+                }
+            })
+            .catch(error => {
+                reject("Network Error")
+            })
+    })
+}
+
+export const deleteUploadFunc = (jwt, uploadId) => {
+    return new Promise((resolve, reject) => {
+        const config = {
+            headers: {
+                'authorization': 'bearer ' + jwt
+            }
+        }
+
+        axios.post(`${URL}/public/deleteupload`, {uploadId: uploadId}, config)
         .then((res) => {
-            if (res.data.uploads) {
-                userContextDispatch({
-                    type: 'SET-UPLOADS',
-                    data: {
-                        uploads: res.data.uploads
-                    }
-                })
-                done(null);
+            if (res.data.success) {
+                resolve(res.data.success.message);
             } else if (res.data.error) {
                 //failed to upload
-                done(res.data.error.message);
+                reject(res.data.error.message);
             } else {
-                done('Unexpected server response')
+                reject('Unexpected server response')
             }
         })
         .catch((error) => {
-            done('Network Error')
+            reject('Network Error')
         });
+    })
+}
+
+export const updateUserField = (jwt, field, value) => {
+    return new Promise((resolve, reject) => {
+        const config = {
+            headers: {
+                'authorization': 'bearer ' + jwt
+            }
+        }
+
+        axios.post(`${URL}/public/updateuser`, {field, value}, config)
+        .then((res) => {
+            if (res.data.success) {
+                resolve({ field: res.data.field, value: res.data.value})
+            } else if (res.data.error) {
+                //failed to upload
+                reject(res.data.error.message);
+            } else {
+                reject('Unexpected server response')
+            }
+        })
+        .catch((error) => {
+            reject('Network Error')
+        });
+    })
 }

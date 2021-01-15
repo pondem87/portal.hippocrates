@@ -16,6 +16,11 @@ const userContextReducer = (state, action) => {
             return ({
                 ...state
             })
+        case 'UPDATE-USER':
+            return ({
+                ...state,
+                [action.data.field]: action.data.value
+            })
         default:
             return state;
     }

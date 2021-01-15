@@ -6,10 +6,10 @@ import DashHeader from './dashHeader';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import 'react-tabs/style/react-tabs.css';
 
-const PublicHome = ({user, token, dispatch}) => {
+const PublicHome = ({user}) => {
     return (
         <div>
-            <DashHeader user={user} dispatch={dispatch} />
+            <DashHeader user={user} />
             <div className="my-2">
                 <Tabs direction={'rtl'}>
                     <TabList>
@@ -28,7 +28,7 @@ const PublicHome = ({user, token, dispatch}) => {
                     </TabPanel>
                     <TabPanel>
                         <h2 className="border-bottom border-info text-muted">Verification of identity</h2>
-                        <Verification uploads={user.uploads} token={token} dispatch={dispatch} />
+                        <Verification user={user} />
                     </TabPanel>
                 </Tabs>
             </div>

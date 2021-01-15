@@ -31,6 +31,16 @@ const Forgot = () => {
         }))
     }
 
+    const handleCheckbox = (e) => {
+        let id = e.target.id;
+        let value = e.target.checked;
+        console.log(`Change event: id: ${id} value: ${value}`);
+        setState(prevState => ({
+            ...prevState,
+            [id]: value
+        }))
+    }
+
     const handleSubmit = (e) => {
         e.preventDefault();
         if (state.email) {
@@ -75,7 +85,7 @@ const Forgot = () => {
                                     <input className="form-control" type='email' id='typeemail' onChange={handleChange} value={state.typeemail} required/>
                                 </div>
                                 <div className="form-group form-check">
-                                    <input type="checkbox" className="form-check-input" id="gettoken" onChange={handleChange} value={state.gettoken} />
+                                    <input type="checkbox" className="form-check-input" id="gettoken" onChange={handleCheckbox} checked={state.gettoken} />
                                     <label className="form-check-label" htmlFor="gettoken">Send reset token to my email</label>
                                 </div>
                                 <div className="text-center">
@@ -84,6 +94,7 @@ const Forgot = () => {
                             </div>
                             :
                             <div>
+                                <p className="center">{state.email}</p>
                                 <div className="form-group">
                                     <label>Reset Token</label>
                                     <label htmlFor="token"></label>
@@ -95,9 +106,9 @@ const Forgot = () => {
                                     <input className="form-control" type='password' id='password' minLength={8} onChange={handleChange} value={state.password} required />
                                 </div>
                                 <div className="form-group">
-                                    <label>Password</label>
+                                    <label>Repeat password</label>
                                     <label htmlFor="password"></label>
-                                    <input className="form-control" type='repeatpassword' id='password' minLength={8} onChange={handleChange} value={state.repeatpassword} required />
+                                    <input className="form-control" type='password' id='repeatpassword' minLength={8} onChange={handleChange} value={state.repeatpassword} required />
                                 </div>
                                 <div className="text-center">
                                     <input type='submit' className="btn btn-primary" value="Login" />

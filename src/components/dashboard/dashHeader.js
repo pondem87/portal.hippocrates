@@ -2,9 +2,9 @@ import React from 'react';
 import dummyIcon from '../../assets/images/user-icon.png'
 import { signoutFunc } from '../../functions/auth';
 
-const DashHeader = ({ user, dispatch }) => {
+const DashHeader = ({ user }) => {
     const logout = () => {
-        signoutFunc(dispatch);
+        signoutFunc(user.dispatch);
     }
 
     return (
@@ -16,7 +16,7 @@ const DashHeader = ({ user, dispatch }) => {
                     <div>
                         <p><span className="font-italic">{user.email}</span><br />
                         <span className="font-weight-bold text-capitalize">{user.surname + ', ' + user.forenames}</span><br />
-                        { (user.accountType === 'PROFESSIONAL' || user.accountType === 'REPRESENTATIVE') && user.profession ? user.profession.map((item, index) => {
+                        { (user.account_type === 'PROFESSIONAL' || user.account_type === 'REPRESENTATIVE') && user.profession ? user.profession.map((item, index) => {
                             return (
                                 <span key={index} className="font-weight-bold text-capitalize">{index > 0 ? ', ' : ''}{item}</span>
                             )
@@ -30,11 +30,11 @@ const DashHeader = ({ user, dispatch }) => {
                             <i className="fas fa-sign-out-alt"></i>
                             <span>Logout</span>
                         </button>
-                        <p>Identity: { user.verification.identityVerified ? <span className="text-success font-weight-bold"><i className="fas fa-check-circle"></i> Verified</span> : <span className="text-danger font-weight-bold"><i className="fas fa-times-circle"></i> Unverified</span> }<br />
+                        <p>Identity: { user.identity_verified ? <span className="text-success font-weight-bold"><i className="fas fa-check-circle"></i> Verified</span> : <span className="text-danger font-weight-bold"><i className="fas fa-times-circle"></i> Unverified</span> }<br />
                         { user.accountType === 'PROFESSIONAL' ?
-                            <span>Qualifications: {user.verification.professionVerified ? <span className="text-success font-weight-bold"><i className="fas fa-check-circle"></i> Verified</span> : <span className="text-danger font-weight-bold"><i className="fas fa-times-circle"></i> Unverified</span> }</span> :
+                            <span>Qualifications: {user.profession_verified ? <span className="text-success font-weight-bold"><i className="fas fa-check-circle"></i> Verified</span> : <span className="text-danger font-weight-bold"><i className="fas fa-times-circle"></i> Unverified</span> }</span> :
                             user.accountType === 'REPRESENTATIVE' ?
-                                <span>Representative: {user.verification.professionVerified ? <span className="text-success font-weight-bold"><i className="fas fa-check-circle"></i> Verified</span> : <span className="text-danger font-weight-bold"><i className="fas fa-times-circle"></i> Unverified</span> }</span> :
+                                <span>Representative: {user.rep_verified ? <span className="text-success font-weight-bold"><i className="fas fa-check-circle"></i> Verified</span> : <span className="text-danger font-weight-bold"><i className="fas fa-times-circle"></i> Unverified</span> }</span> :
                                 <span>Client Account</span>
                         }
                         </p>        

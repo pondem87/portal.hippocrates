@@ -1,13 +1,28 @@
 import React, { useState, useEffect } from 'react';
 import ProgressBar from '../shared/progressBar';
-import { uploadNewFile, deleteUploadFunc } from '../../functions/publicFunctions';
+import { uploadNewFile, deleteUploadFunc, retriveUploads } from '../../functions/publicFunctions';
 
-const Verification = ({uploads, token, dispatch}) => {
+const Verification = ({user}) => {
     const [progress, setProgress] = useState(0);
     const [uploading, setUploading] = useState(false);
     const [error, setError] = useState({error:''})
     const [file, setFile] = useState(null);
     const [uploadError, setUploadError] = useState(null);
+    const [uploads, setUploads] = useState([]);
+
+    useEffect(() => {
+        refreshUploads();
+    }, [])
+
+    const refreshUploads = async() => {
+        try {
+            let uploadsList = await retriveUploads(user.token);
+            setUploads(uploadsList);
+        } catch (error) {
+            alert("Failed to get uploads list: " + error)
+            console.log("Failed to retrieve uploads list")
+        }
+    }
 
     useEffect(() => {
         if (error.error !== '') setUploading(false);
@@ -25,23 +40,23 @@ const Verification = ({uploads, token, dispatch}) => {
         //if there is a file to upload
         let data = new FormData();
         data.append('file', file);
-        uploadNewFile(dispatch, setProgress, setError, token, done, data);
+        uploadNewFile(setProgress, setError, user.token, done, data);
         setUploading(true);
     }
 
     const done = () => {
+        refreshUploads();
         setUploading(false);
         setError({error: ''})
     }
 
-    const deleteUpload = (uploadId) => {
-        console.log('Delete Upload: ', uploadId);
-        deleteUploadFunc(dispatch, token, doneDeleteUpload, uploadId);
-    }
-
-    const doneDeleteUpload = (message) => {
-        if (message) {
-            setUploadError(message);
+    const deleteUpload = async(uploadId) => {
+        try {
+            let response = await deleteUploadFunc(user.token, uploadId);
+        } catch (error) {
+            setUploadError(error);
+        } finally {
+            refreshUploads();
         }
     }
 
@@ -49,9 +64,9 @@ const Verification = ({uploads, token, dispatch}) => {
         <div className="row justify-content-center">
             <div className="col-lg-8 col-md-12 col-sm-12">
                 <h4 className="text-centre">Why verify your identity?</h4>
-                <p>It is not compulsory for you to submit identity documents, however it is good for service providers to be assured they are dealing with real and serious people.
-                    We therefore recommend that you do so to verify your identity. Hippocrates Health Alliance is a legitimate organisation registered with appropriate authorities 
-                    and would like to interact with our clients as such. We hope you will take the step to strengthen our trust.
+                <p>To verify your identity and age you need to upload one of these documents: ID, passport or driver's licence.
+                    To access the full services or any service requiring prescription of medicines we need to verify age and identity.
+                    Edit your profile before uploading. You wont be able to modify your profile after verification.
                 </p>
                 <div className="border border-info rounded py-3 px-4 mb-2">
                     <h5 className="text-centre">Uploaded files</h5>
@@ -71,16 +86,16 @@ const Verification = ({uploads, token, dispatch}) => {
                             {
                                 uploads && uploads.map((upload, index) => {
                                     return (
-                                        <tr key={upload._id}>
+                                        <tr key={upload.iduploads}>
                                             <th scope="row">{index + 1}</th>
-                                            <td>{upload.originalName}</td>
-                                            <td>{upload.uploadedOn}</td>
+                                            <td>{upload.originalname}</td>
+                                            <td>{new Date(upload.upload_time).toDateString()}</td>
                                             <td>{upload.reviewed ? 'Yes' : 'Not Yet'}</td>
                                             <td>{upload.comments && upload.comments}</td>
                                             <td>
                                                 {
-                                                    upload.readOnly ? <span className="text-success">Read Only</span> :
-                                                    <button onClick={(e) => { deleteUpload(upload._id); e.target.disabled = true} } className="btn btn-danger">Delete</button>
+                                                    upload.readonly ? <span className="text-success">Read Only</span> :
+                                                    <button onClick={(e) => { deleteUpload(upload.iduploads); e.target.disabled = true} } className="btn btn-danger">Delete</button>
                                                 }
                                             </td>
                                         </tr>

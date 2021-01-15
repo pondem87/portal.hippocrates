@@ -5,13 +5,13 @@ import Corporate from './corporate';
 import { UserContext } from '../../context/user/userContext';
 
 const Dashboard = () => {
-    const { _doc, token, dispatch } = useContext(UserContext);
+    const user = useContext(UserContext);
 
     let content = null;
 
-    switch (_doc.accountType) {
+    switch (user.account_type) {
         case 'CLIENT':
-            content = <PublicHome user={_doc} token={token} dispatch={dispatch} />
+            content = <PublicHome user={user} />
             break;
         case 'PROFESSIONAL':
             content = <Professional />

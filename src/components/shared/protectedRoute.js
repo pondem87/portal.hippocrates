@@ -8,9 +8,9 @@ class ProtectedRoute extends React.Component {
     render() {
         const { component, computedMatch, location, path } = this.props;
         const Component = component;
-        console.log('comp render:', this.context);
-        const isAuthenticated = this.context.signedIn;
-        const isVerified = this.context._doc && this.context._doc.verification.accountVerified;
+        const { signedIn, account_verified } = this.context
+        const isAuthenticated = signedIn;
+        const isVerified = account_verified;
 
         let passedOnProps = {
             match: computedMatch,
