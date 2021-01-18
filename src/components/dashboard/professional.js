@@ -9,17 +9,17 @@ import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import 'react-tabs/style/react-tabs.css';
 
 const Professional = () => {
-    const { _doc, token , dispatch} = useContext(UserContext);
+    const user = useContext(UserContext);
 
     return (
         <div>
-            <DashHeader user={_doc} dispatch={dispatch} />
-            { _doc.profession && (_doc.profession.length > 0) ? <ProfessionalHome user={_doc} token={token} dispatch={dispatch} /> : <ProfessionRegistration user={_doc} /> }
+            <DashHeader user={user} />
+            { user.profession ? <ProfessionalHome user={user} /> : <ProfessionRegistration user={user} /> }
         </div>
     );
 }
 
-const ProfessionalHome = ({user, token, dispatch}) => {
+const ProfessionalHome = ({user}) => {
     return (
         <div className="my-2">
             <Tabs direction={'rtl'}>
@@ -35,7 +35,7 @@ const ProfessionalHome = ({user, token, dispatch}) => {
                 </TabPanel>
                 <TabPanel>
                     <h2 className="border-bottom border-info text-muted">Services</h2>
-                    { user.verification.professionVerified ? <Services /> : 
+                    { user.profession_verified ? <Services /> : 
                         <div className="row">
                             <div className="col-12">
                                 <h4>Verification Pending</h4>
@@ -46,7 +46,7 @@ const ProfessionalHome = ({user, token, dispatch}) => {
                 </TabPanel>
                 <TabPanel>
                     <h2 className="border-bottom border-info text-muted">Uploads</h2>
-                    <Uploads uploads={user.uploads} token={token} dispatch={dispatch} />
+                    <Uploads user={user} />
                 </TabPanel>
             </Tabs>
         </div>

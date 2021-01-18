@@ -1,6 +1,7 @@
 import React from 'react';
 import dummyIcon from '../../assets/images/user-icon.png'
 import { signoutFunc } from '../../functions/auth';
+import moment from 'moment';
 
 const DashHeader = ({ user }) => {
     const logout = () => {
@@ -16,11 +17,9 @@ const DashHeader = ({ user }) => {
                     <div>
                         <p><span className="font-italic">{user.email}</span><br />
                         <span className="font-weight-bold text-capitalize">{user.surname + ', ' + user.forenames}</span><br />
-                        { (user.account_type === 'PROFESSIONAL' || user.account_type === 'REPRESENTATIVE') && user.profession ? user.profession.map((item, index) => {
-                            return (
-                                <span key={index} className="font-weight-bold text-capitalize">{index > 0 ? ', ' : ''}{item}</span>
-                            )
-                        }) : <span></span> //display gender and age here for clients
+                        { (user.account_type === 'PROFESSIONAL' || user.account_type === 'REPRESENTATIVE') && user.profession ? 
+                            user.profession : 
+                            <span>{user.birthday && moment().diff(user.birthday, 'years')} / {user.gender && user.gender}</span> //display gender and age here for clients
                         }</p>
                     </div>
                 </div>
@@ -31,7 +30,7 @@ const DashHeader = ({ user }) => {
                             <span>Logout</span>
                         </button>
                         <p>Identity: { user.identity_verified ? <span className="text-success font-weight-bold"><i className="fas fa-check-circle"></i> Verified</span> : <span className="text-danger font-weight-bold"><i className="fas fa-times-circle"></i> Unverified</span> }<br />
-                        { user.accountType === 'PROFESSIONAL' ?
+                        { user.account_type === 'PROFESSIONAL' ?
                             <span>Qualifications: {user.profession_verified ? <span className="text-success font-weight-bold"><i className="fas fa-check-circle"></i> Verified</span> : <span className="text-danger font-weight-bold"><i className="fas fa-times-circle"></i> Unverified</span> }</span> :
                             user.accountType === 'REPRESENTATIVE' ?
                                 <span>Representative: {user.rep_verified ? <span className="text-success font-weight-bold"><i className="fas fa-check-circle"></i> Verified</span> : <span className="text-danger font-weight-bold"><i className="fas fa-times-circle"></i> Unverified</span> }</span> :

@@ -46,7 +46,7 @@ export const professionalRegistration = (userContextDispatch, setProgress, setEr
         });
 }
 
-export const uploadNewFiles = (userContextDispatch, setProgress, setError, jwt, done, data) => {
+export const uploadNewFiles = (setProgress, setError, jwt, done, data) => {
     const config = {
         headers: {
             'Content-Type': 'multipart/form-data',
@@ -62,13 +62,7 @@ export const uploadNewFiles = (userContextDispatch, setProgress, setError, jwt, 
 
     axios.post(`${URL}/professionals/upload`, data, config)
         .then((res) => {
-            if (res.data.uploads) {
-                userContextDispatch({
-                    type: 'SET-UPLOADS',
-                    data: {
-                        uploads: res.data.uploads
-                    }
-                })
+            if (res.data.success) {
                 done();
             } else if (res.data.error) {
                 //failed to upload

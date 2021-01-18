@@ -2,15 +2,30 @@ import React, { useEffect, useState } from 'react';
 import FileUploads from '../shared/fileUploads';
 import ProgressBar from '../shared/progressBar';
 import { uploadNewFiles } from '../../functions/registration';
-import { deleteUploadFunc } from '../../functions/publicFunctions';
+import { deleteUploadFunc, retriveUploads } from '../../functions/publicFunctions';
 
 
-const Uploads = ({ uploads, token, dispatch }) => {
+const Uploads = ({user}) => {
     const [progress, setProgress] = useState(0);
     const [uploading, setUploading] = useState(false);
     const [errorState, setError] = useState({error: ''});
     const [files, setFiles] = useState(null);
     const [uploadError, setUploadError] = useState(null);
+    const [uploads, setUploads] = useState([]);
+
+    useEffect(() => {
+        refreshUploads();
+    }, [])
+
+    const refreshUploads = async() => {
+        try {
+            let uploadsList = await retriveUploads(user.token);
+            setUploads(uploadsList);
+        } catch (error) {
+            alert("Failed to get uploads list: " + error)
+            console.log("Failed to retrieve uploads list")
+        }
+    }
 
     useEffect(() => {
         if (errorState.error !== '') setUploading(false);
@@ -40,23 +55,23 @@ const Uploads = ({ uploads, token, dispatch }) => {
         setUploading(true);
 
         //call uploading function here
-        uploadNewFiles(dispatch, setProgress, setError, token, done, data);
+        uploadNewFiles(setProgress, setError, user.token, done, data);
     }
 
     const done = () => {
+        refreshUploads();
         setUploading(false);
         setError({error: ''});
         setFiles(null);
     }
 
-    const deleteUpload = (uploadId) => {
-        //console.log('Delete Upload: ', uploadId);
-        deleteUploadFunc(dispatch, token, doneDeleteUpload, uploadId);
-    }
-
-    const doneDeleteUpload = (message) => {
-        if (message) {
-            setUploadError(message);
+    const deleteUpload = async(uploadId) => {
+        try {
+            await deleteUploadFunc(user.token, uploadId);
+        } catch (error) {
+            setUploadError(error);
+        } finally {
+            refreshUploads();
         }
     }
 
@@ -80,16 +95,16 @@ const Uploads = ({ uploads, token, dispatch }) => {
                             {
                                 uploads && uploads.map((upload, index) => {
                                     return (
-                                        <tr key={upload._id}>
+                                        <tr key={upload.iduploads}>
                                             <th scope="row">{index + 1}</th>
-                                            <td>{upload.originalName}</td>
-                                            <td>{upload.uploadedOn}</td>
+                                            <td>{upload.originalname}</td>
+                                            <td>{new Date(upload.upload_time).toDateString()}</td>
                                             <td>{upload.reviewed ? 'Yes' : 'Not Yet'}</td>
-                                            <td>{upload.comments && upload.comments}</td>
+                                            <td>{upload.comment && upload.comment}</td>
                                             <td>
                                                 {
                                                     upload.readOnly ? <span className="text-success">Read Only</span> :
-                                                    <button onClick={(e) => { deleteUpload(upload._id); e.target.value='Deleting...'} } className="btn btn-danger">Delete</button>
+                                                    <button onClick={(e) => { deleteUpload(upload.iduploads); e.target.value='Deleting...'; e.target.disabled = true; } } className="btn btn-danger">Delete</button>
                                                 }
                                             </td>
                                         </tr>

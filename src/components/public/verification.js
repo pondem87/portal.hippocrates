@@ -52,7 +52,7 @@ const Verification = ({user}) => {
 
     const deleteUpload = async(uploadId) => {
         try {
-            let response = await deleteUploadFunc(user.token, uploadId);
+            await deleteUploadFunc(user.token, uploadId);
         } catch (error) {
             setUploadError(error);
         } finally {
@@ -91,11 +91,11 @@ const Verification = ({user}) => {
                                             <td>{upload.originalname}</td>
                                             <td>{new Date(upload.upload_time).toDateString()}</td>
                                             <td>{upload.reviewed ? 'Yes' : 'Not Yet'}</td>
-                                            <td>{upload.comments && upload.comments}</td>
+                                            <td>{upload.comment && upload.comment}</td>
                                             <td>
                                                 {
                                                     upload.readonly ? <span className="text-success">Read Only</span> :
-                                                    <button onClick={(e) => { deleteUpload(upload.iduploads); e.target.disabled = true} } className="btn btn-danger">Delete</button>
+                                                    <button onClick={(e) => { deleteUpload(upload.iduploads); e.target.disabled = true; e.target.value='Deleting...'} } className="btn btn-danger">Delete</button>
                                                 }
                                             </td>
                                         </tr>
