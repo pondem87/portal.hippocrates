@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios from './axios';
 import { URL } from '../variables'
 
 //checks if user logged in and returns user object or error
@@ -43,7 +43,6 @@ export const loginFunc = (dispatch, setErrorState, done, values) => {
         .then((res) => {
             if (res.data.token) {
                 //login successful
-                console.log('User:', res.data);
                 localStorage.setItem('jwt', res.data.token);
                 dispatch({
                     type: 'SET-USER',
@@ -144,7 +143,7 @@ export const ResetPassword = (dispatch, setState, done, values) => {
     axios.post(`${URL}/auth/resetpassword`, values)
         .then((res) => {
             console.log(res.data);
-            if (res.data.user) {
+            if (res.data.token) {
                 localStorage.setItem('jwt', res.data.token);
                 dispatch({
                     type: 'SET-USER',

@@ -103,7 +103,7 @@ const Uploads = ({user}) => {
                                             <td>{upload.comment && upload.comment}</td>
                                             <td>
                                                 {
-                                                    upload.readOnly ? <span className="text-success">Read Only</span> :
+                                                    upload.readonly ? <span className="text-success">Read Only</span> :
                                                     <button onClick={(e) => { deleteUpload(upload.iduploads); e.target.value='Deleting...'; e.target.disabled = true; } } className="btn btn-danger">Delete</button>
                                                 }
                                             </td>

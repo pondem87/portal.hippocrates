@@ -5,7 +5,7 @@ import { UserContext } from '../../context/user/userContext';
 import Loader from '../shared/Loader';
 
 const Forgot = () => {
-    const { dispatch } = useContext(UserContext);
+    const user = useContext(UserContext);
     const [state, setState] = useState({
         email: null,
         error: null,
@@ -45,7 +45,7 @@ const Forgot = () => {
         e.preventDefault();
         if (state.email) {
             if (state.password === state.repeatpassword) {
-                ResetPassword(dispatch, setState, done, {
+                ResetPassword(user.dispatch, setState, done, {
                     email: state.email,
                     token: state.token,
                     password: state.password

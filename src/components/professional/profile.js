@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { updateUserField } from '../../functions/publicFunctions';
+import { getCertificatesFunction } from '../../functions/professionalFunctions';
 import Loader from '../shared/Loader';
 
 const Profile = ({ user }) => {
@@ -27,6 +28,20 @@ const Profile = ({ user }) => {
     })
     
     const [loading, setLoading] = useState(false);
+    const [certificates, setCertificates] = useState([]);
+
+    useEffect(() => {
+        getCertificates();
+    }, [])
+
+    const getCertificates = async () => {
+        try {
+            let certs = await getCertificatesFunction(user.token);
+            setCertificates(certs);
+        } catch (error) {
+            alert("Failed to load certificates list: " + error)
+        }
+    }
 
     const setEditMode = (field) => {
         setState(prev => ({
@@ -260,20 +275,20 @@ const Profile = ({ user }) => {
                 <h4>Verified Certificates</h4>
                 <div className="list-group">
                     {
-                        user.certification && user.certification.map((certificate) => {
+                        certificates && certificates.map((certificate) => {
                             return (
-                                <div key={certificate._id} className="list-group-item list-group-item-action flex-column align-items-start active">
+                                <div key={certificate.idcertificates} className="list-group-item list-group-item-action flex-column align-items-start active">
                                     <div className="d-flex w-100 justify-content-between">
                                         <h5 className="mb-1">{certificate.certification}</h5>
-                                        <small>{certificate.identifyingNumber}</small>
+                                        <small>{certificate.certificate_num}</small>
                                     </div>
-                                    <p className="mb-1">Issued by {certificate.certifyingBody} on {certificate.date}</p>
+                                    <p className="mb-1">Issued by {certificate.certifying_body} on {new Date(certificate.issue_date).toDateString()}</p>
                                 </div>
                             )
                         })
                     }
                 </div>
-                { user.certification && user.certification.length !== 0 ? <span /> :
+                { certificates && certificates.length > 0 ? <span /> :
                     <p>Certificates that you have uploaded and have passed verification will be listed in this section. Only qualified personnel will be able to subscribe to services provided by Hippocrates Health Alliance.</p>}
             </div>
         </div>

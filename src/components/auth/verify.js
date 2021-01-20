@@ -3,12 +3,15 @@ import Loader from '../shared/Loader';
 import { UserContext } from '../../context/user/userContext';
 import { VerifyAccount } from '../../functions/auth';
 import { useHistory } from 'react-router-dom';
+import axios from '../../functions/axios';
+import { URL } from '../../variables';
 
 const Verify = () => {
-        const { dispatch } = useContext(UserContext);
+        const user = useContext(UserContext);
         const [state, setState] = useState({ error: null, token: ''});
         const [isLoading, setLoder] = useState();
         const history = useHistory();
+        const [disableButton, setDisableButton] = useState(false);
 
         useEffect(() => {
             if (state.error) setLoder(false);
@@ -25,13 +28,38 @@ const Verify = () => {
 
         const handleSubmit = (e) => {
             e.preventDefault();
-            VerifyAccount(dispatch, setState, done, {token: state.token});
+            VerifyAccount(user.dispatch, setState, done, {token: state.token});
             setState({ error: null, token: ''});
             setLoder(true);
         }
 
         const done = () => {
             history.push('/');
+        }
+
+        const resendVerification = () => {
+            const config = {
+                headers: {
+                    'authorization': 'bearer ' + user.token
+                }
+            }
+            
+            setDisableButton(true);
+
+            axios.post(`${URL}/auth/resendverification`, {}, config)
+                .then((res) => {
+                    if (res.data.success) {
+                        alert(res.data.success.message);
+                    } else if (res.data.error) {
+                        alert(res.data.error.message);
+                    }
+                })
+                .catch(error => {
+                    alert("Network Error");
+                })
+                .finally(() => {
+                    setDisableButton(false)
+                })
         }
         
         return (
@@ -52,6 +80,10 @@ const Verify = () => {
                             <input type='submit' className="btn btn-primary"/>
                         </div>
                     </form>
+                    <div className="text-center">
+                        <p className="text-center">Did not receive code in your email inbox? Try sending again.</p>
+                        <button disabled={disableButton} onClick={resendVerification} className="btn btn-primary">send code to email</button>
+                    </div>
                 </div>
             </div>
         )
