@@ -29,7 +29,7 @@ function App() {
     <div>
         <MainHeader />
         <BrowserRouter>
-          <div className="container mb-5 pb-1">
+          <div className="container full-height">
             <Switch>
               <ProtectedRoute exact path='/' component={Dashboard} />
               <Route path="/signup" component={SignUp} />

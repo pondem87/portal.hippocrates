@@ -98,7 +98,7 @@ const SignUp = () => {
                             <input className="form-control" type='password' id='password' minLength={8} onChange={handleChange} value={state.password} required />
                         </div>
                         <div className="form-group">
-                            <label>Repeat assword</label>
+                            <label>Repeat password</label>
                             <label htmlFor="repeatpassword"></label>
                             <input className="form-control" type='password' id='repeatpassword' minLength={8} onChange={handleChange} value={state.repeatpassword} required />
                         </div>

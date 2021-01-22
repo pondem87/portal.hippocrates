@@ -34,14 +34,24 @@
     <title>Hippocrates Health Alliance Portal</title>
 
     <style>
+      body {
+        margin:0;
+        padding:0;
+        height:100%;
+      }
       .header {
         background-color: cadetblue;
       }
       .footer {
-        position: fixed;
+        position: relative;
         bottom: 0;
         width: 100%;
         padding: 0;
+        z-index: 1;
+      }
+      .full-height {
+        position: relative;
+        min-height: calc(100vh - 120px);
       }
       .error-message {
         color: crimson;

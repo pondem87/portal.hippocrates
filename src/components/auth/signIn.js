@@ -52,7 +52,7 @@ const SignIn = () => {
                     <form onSubmit={handleSubmit} className="border border-info rounded py-2 px-5">
                         <p className="error-message">{state.error}</p>
                         <div className="form-group">
-                            <label htmlFor="username">Username</label>
+                            <label htmlFor="username">Email</label>
                             <input className="form-control" type='email' id='email' onChange={handleChange} value={state.email} required />
                         </div>
                         <div className="form-group">
