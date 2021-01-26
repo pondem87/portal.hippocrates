@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { getHouseCallRegistration, registerHouseCall } from '../../../../functions/houseCallFunctions';
+import { getLocumRegistration, registerLocum } from '../../../../functions/locumWorkerFunctions';
 import { resumeService, suspendService, updateServiceHours } from '../../../../functions/professionalFunctions';
 import Loader from '../../../shared/Loader';
-import SetDaysAndHours, { getDaysAndHours } from '../../../shared/setDaysAndHours';
+import SetDaysAndHours, {getDaysAndHours} from '../../../shared/setDaysAndHours';
 
-const HouseCallProvider = ({user}) => {
+const LocumWorker = ({user}) => {
     const [loading, setLoading] = useState(true);
     const [registered, setRegistered] = useState(false);
     const [registration, setRegistration] = useState(null);
@@ -18,7 +18,7 @@ const HouseCallProvider = ({user}) => {
 
     const checkRegistration = async () => {
         try {
-            let reg = await getHouseCallRegistration(user.token)
+            let reg = await getLocumRegistration(user.token)
             setRegistration(reg);
             setRegistered(true);
             setLoading(false)
@@ -31,6 +31,7 @@ const HouseCallProvider = ({user}) => {
             }
         }
     }
+
 
     const [state, setState] = useState({
         monday: {
@@ -72,8 +73,8 @@ const HouseCallProvider = ({user}) => {
     })
     const [city, setCity] = useState('');
     const [suburbs, setSuburbs] = useState('');
+    
 
-    //submit registration form
     const submitHandler = async (e) => {
         e.preventDefault();
 
@@ -91,7 +92,7 @@ const HouseCallProvider = ({user}) => {
         catchment = `{"city": "${city}", "areas": "${suburbs}"}`
 
         try {
-            let reg = await registerHouseCall(user.token, {hours, catchment});
+            let reg = await registerLocum(user.token, {hours, catchment});
             setRegistration(reg);
             setRegistered(true);
         } catch (error) {
@@ -117,7 +118,7 @@ const HouseCallProvider = ({user}) => {
 
         try {
             setDisableSaveButton(true);
-            await updateServiceHours(user.token, "housecall", {hours, catchment});
+            await updateServiceHours(user.token, "locum", {hours, catchment});
             checkRegistration();
         } catch (error) {
             alert("Failed to update: " + error)
@@ -133,9 +134,9 @@ const HouseCallProvider = ({user}) => {
         try {
             setDisableToggleButton(true);
             if (registration.suspended) {
-                await resumeService(user.token, "housecall")
+                await resumeService(user.token, "locum")
             } else {
-                await suspendService(user.token, "housecall")
+                await suspendService(user.token, "locum")
             } 
             checkRegistration();
         } catch (error) {
@@ -151,9 +152,9 @@ const HouseCallProvider = ({user}) => {
         return (
             <div className="row">
                 <div className="col-md-6 col-sm-12">
-                    <h3>House call service information</h3>
-                    <p>You are registered for house calls. We will contact you via your provided contacts for assignment of clients
-                        within your scope and terms of engagement. More information will be communicated here and/or by other convenient means.
+                    <h3>Locum information</h3>
+                    <p>You are registered for locums. We will contact you via your provided contacts for assignment according to the
+                        information you provided. More information will be communicated here and/or by other convenient means.
                     </p>
                     {
                         registration.suspended ?
@@ -223,14 +224,13 @@ const HouseCallProvider = ({user}) => {
         return (
             <div className="row justify-content-center text-muted">
                 <div className="col-md-6 col-sm-12 py-2">
-                    <h3>House call service</h3>
+                    <h3>Locums</h3>
                     <p>
-                        You can register for house calls by filling in the form below which informs us on
-                        how, when and where you are able to provide service. This helps us to connect the right professional
-                        to the right client at the right time.
+                        You can register for locums by filling in the form below which informs us on
+                        when and where you are available for locums.
                     </p>
                     <form onSubmit={submitHandler}>
-                        <h4>House call registration form</h4>
+                        <h4>Locum registration form</h4>
                         <div>
                             <p>Which days and hours are you available?</p>
                             <SetDaysAndHours state={state} setState={setState} />
@@ -260,4 +260,4 @@ const HouseCallProvider = ({user}) => {
     }  
 }
 
-export default HouseCallProvider;
+export default LocumWorker;

@@ -5,6 +5,8 @@ import HouseCallClient from './houseCallService/houseCallClient';
 import HouseCallProvider from './houseCallService/houseCallProvider';
 import UnimplementedService from './unimplementedService';
 import { useHistory } from 'react-router-dom';
+import TelemedicineProvider from './telemedicineService/telemedicineProvider';
+import LocumWorker from './locumsService/locumWorker';
 
 const ServicesRoot = (props) => {
     const user = useContext(UserContext);
@@ -22,6 +24,14 @@ const ServicesRoot = (props) => {
         case 'house-call':
             if ( user.account_type === 'CLIENT') service = <HouseCallClient user={user} />
             else service = <HouseCallProvider user={user} />;
+            break;
+        case 'telemedicine':
+            if (user.account_type === 'CLIENT') service = <HouseCallClient user={user} />
+            else service = <TelemedicineProvider user={user} />;
+            break;
+        case 'locums':
+            if (user.account_type === 'PROFESSIONAL') service = <LocumWorker user={user} />
+            else service = <UnimplementedService />
             break;
         default:
             service = <UnimplementedService />

@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { getHouseCallRegistration, registerHouseCall } from '../../../../functions/houseCallFunctions';
+import { getTelemedRegistration, registerTelemed } from '../../../../functions/telemedicineFunctions';
 import { resumeService, suspendService, updateServiceHours } from '../../../../functions/professionalFunctions';
 import Loader from '../../../shared/Loader';
 import SetDaysAndHours, { getDaysAndHours } from '../../../shared/setDaysAndHours';
 
-const HouseCallProvider = ({user}) => {
-    const [loading, setLoading] = useState(true);
+const TelemedicineProvider = ({user}) => {
+    const [loading, setLoading] = useState(false);
     const [registered, setRegistered] = useState(false);
     const [registration, setRegistration] = useState(null);
     const [editMode, setEditMode] = useState(false);
@@ -18,7 +18,7 @@ const HouseCallProvider = ({user}) => {
 
     const checkRegistration = async () => {
         try {
-            let reg = await getHouseCallRegistration(user.token)
+            let reg = await getTelemedRegistration(user.token)
             setRegistration(reg);
             setRegistered(true);
             setLoading(false)
@@ -70,10 +70,8 @@ const HouseCallProvider = ({user}) => {
             hours: {start: '', end: ''}            
         }
     })
-    const [city, setCity] = useState('');
-    const [suburbs, setSuburbs] = useState('');
+    const [medium, setMedium] = useState('')
 
-    //submit registration form
     const submitHandler = async (e) => {
         e.preventDefault();
 
@@ -81,17 +79,15 @@ const HouseCallProvider = ({user}) => {
 
         if (!hours) return;
 
-        let catchment = '';
-
-        if (city === '') {
-            alert("Please provide a city");
+        if (medium === '') {
+            alert("Please provide at least one platform");
             return;
         }
 
-        catchment = `{"city": "${city}", "areas": "${suburbs}"}`
+        let platforms = `{"platforms": "${medium.toLowerCase()}"}`
 
         try {
-            let reg = await registerHouseCall(user.token, {hours, catchment});
+            let reg = await registerTelemed(user.token, {hours, platforms});
             setRegistration(reg);
             setRegistered(true);
         } catch (error) {
@@ -106,18 +102,16 @@ const HouseCallProvider = ({user}) => {
 
         if (!hours) return;
 
-        let catchment = '';
-
-        if (city === '') {
-            alert("Please provide a city");
+        if (medium === '') {
+            alert("Please provide at least one platform");
             return;
         }
 
-        catchment = `{"city": "${city}", "areas": "${suburbs}"}`
+        let platforms = `{"platforms": "${medium.toLowerCase()}"}`
 
         try {
             setDisableSaveButton(true);
-            await updateServiceHours(user.token, "housecall", {hours, catchment});
+            await updateServiceHours(user.token, "telemedicine", {hours, platforms});
             checkRegistration();
         } catch (error) {
             alert("Failed to update: " + error)
@@ -133,9 +127,9 @@ const HouseCallProvider = ({user}) => {
         try {
             setDisableToggleButton(true);
             if (registration.suspended) {
-                await resumeService(user.token, "housecall")
+                await resumeService(user.token, "telemedicine")
             } else {
-                await suspendService(user.token, "housecall")
+                await suspendService(user.token, "telemedicine")
             } 
             checkRegistration();
         } catch (error) {
@@ -151,8 +145,8 @@ const HouseCallProvider = ({user}) => {
         return (
             <div className="row">
                 <div className="col-md-6 col-sm-12">
-                    <h3>House call service information</h3>
-                    <p>You are registered for house calls. We will contact you via your provided contacts for assignment of clients
+                    <h3>Telemedicine service information</h3>
+                    <p>You are registered for telemedicine. We will contact you via your provided contacts for assignment of clients
                         within your scope and terms of engagement. More information will be communicated here and/or by other convenient means.
                     </p>
                     {
@@ -161,8 +155,7 @@ const HouseCallProvider = ({user}) => {
                             : <span />
                     }
                     <h3>Terms</h3>
-                    <p className="text-capitalize"><b>City/Town: </b>{JSON.parse(registration.catchment).city}</p>
-                    <p className="text-capitalize"><b>Areas: </b>{JSON.parse(registration.catchment).areas}</p>
+                    <p className="text-capitalize"><b>Platforms: </b>{JSON.parse(registration.platforms).platforms}</p>
                     <h5>Days</h5>
                     {
                         days.map((day) => {
@@ -191,19 +184,13 @@ const HouseCallProvider = ({user}) => {
                                 <p>Which days and hours are you available?</p>
                                 <SetDaysAndHours state={state} setState={setState} />
 
-                                <p className="pt-4">Which locations can you cover?</p>
+                                <p className="pt-4">Which platforms do you prefer?</p>
+                                <p>If more than one put a comma separated list e.g Whatsapp, Skype</p>
                                 <div className="input-group mb-3">
                                     <div className="input-group-prepend">
-                                        <span className="input-group-text" id="inputGroup-sizing-default">City/Town</span>
+                                        <span className="input-group-text" id="inputGroup-sizing-default">platforms</span>
                                     </div>
-                                    <input type="text" className="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" onChange={(e) => setCity(e.target.value)} value={city} />
-                                </div>
-                                <p className="mt-3">If more than one area put a comma to seperate the listed areas e.g Budiriro, Avondale, Mbare</p>
-                                <div className="input-group mb-3 mt-0 pt-0">
-                                    <div className="input-group-prepend">
-                                        <span className="input-group-text" id="inputGroup-sizing-default">Suburbs/Areas</span>
-                                    </div>
-                                    <input type="text" className="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" onChange={(e) => setSuburbs(e.target.value)} value={suburbs} />
+                                    <input type="text" className="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" onChange={(e) => setMedium(e.target.value)} value={medium} />
                                 </div>
                                 <div>
                                     <button onClick={() => setEditMode(false)} className="btn btn-danger float-right">Cancel</button>
@@ -223,32 +210,27 @@ const HouseCallProvider = ({user}) => {
         return (
             <div className="row justify-content-center text-muted">
                 <div className="col-md-6 col-sm-12 py-2">
-                    <h3>House call service</h3>
+                    <h4>Telemedicine service</h4>
                     <p>
-                        You can register for house calls by filling in the form below which informs us on
-                        how, when and where you are able to provide service. This helps us to connect the right professional
+                        You can register for telemedicine by filling in the form below which informs us on
+                        which platform and what time you are available. This helps us to connect the right professional
                         to the right client at the right time.
                     </p>
                     <form onSubmit={submitHandler}>
-                        <h4>House call registration form</h4>
+                        <h3>Telemedicine registration form</h3>
                         <div>
                             <p>Which days and hours are you available?</p>
                             <SetDaysAndHours state={state} setState={setState} />
                             
-                            <p className="pt-4">Which locations can you cover?</p>
+                            <p className="pt-4">Which platforms do you prefer?</p>
+                            <p>If more than one put a comma separated list e.g Whatsapp, Skype</p>
                             <div className="input-group mb-3">
                                 <div className="input-group-prepend">
-                                    <span className="input-group-text" id="inputGroup-sizing-default">City/Town</span>
+                                    <span className="input-group-text" id="inputGroup-sizing-default">platforms</span>
                                 </div>
-                                <input type="text" className="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" onChange={(e) => setCity(e.target.value)} value={city} />
+                                <input type="text" className="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" onChange={(e) => setMedium(e.target.value)} value={medium} />
                             </div>
-                            <p className="mt-3">If more than one area put a comma to seperate the listed areas e.g Budiriro, Avondale, Mbare</p>
-                            <div className="input-group mb-3 mt-0 pt-0">
-                                <div className="input-group-prepend">
-                                    <span className="input-group-text" id="inputGroup-sizing-default">Suburbs/Areas</span>
-                                </div>
-                                <input type="text" className="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" onChange={(e) => setSuburbs(e.target.value)} value={suburbs} />
-                            </div>
+                            
                             <div className="text-center">
                                 <input className="btn btn-info" type="submit" value="Sign Me Up" />
                             </div>
@@ -260,4 +242,4 @@ const HouseCallProvider = ({user}) => {
     }  
 }
 
-export default HouseCallProvider;
+export default TelemedicineProvider;
