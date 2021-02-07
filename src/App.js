@@ -14,6 +14,8 @@ import SignIn from './components/auth/signIn';
 import Verify from './components/auth/verify';
 import Dashboard from './components/dashboard/dashboard';
 import ServicesRoot from './components/services/serviceComponents/servicesRoot';
+import Pay from './components/payment/pay';
+import PaymentHistory from './components/payment/paymentHistory';
 
 function App() {
   const { dispatch } = useContext(UserContext);
@@ -37,6 +39,8 @@ function App() {
               <Route path="/signin" component={SignIn} />
               <ProtectedRoute path="/verify" component={Verify} />
               <ProtectedRoute path="/services/:serviceId" component={ServicesRoot} />
+              <ProtectedRoute path="/pay/:requestId" component={Pay} />
+              <ProtectedRoute path="/payments" component={PaymentHistory} />
               <ProtectedRoute component={Dashboard} />
             </Switch>
           </div>

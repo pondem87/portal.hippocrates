@@ -88,3 +88,25 @@ export const updateServiceHours = (token, service, data) => {
             })
     })
 }
+
+export const getAllAssignments = (token, service, page, limit) => {
+    return new Promise((resolve, reject) => {
+        const config = {
+            headers: {
+                'authorization': 'bearer ' + token
+            }
+        }
+
+        axios.get(`${URL}/professionals/getassignments?service=${service}&page=${page}&limit=${limit}`, config)
+            .then((res) => {
+                if (res.data.assignments) {
+                    resolve(res.data.assignments);
+                } else {
+                    reject(res.data.error ? res.data.error.message : "Server error")
+                }
+            })
+            .catch(error => {
+                reject("Network Error")
+            })
+    })
+}

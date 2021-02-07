@@ -111,3 +111,41 @@ export const updateUserField = (jwt, field, value) => {
         });
     })
 }
+
+export const serviceRequest = (token, service, params) => {
+    return new Promise((resolve, reject) => {
+        const config = {
+            headers: {
+                'authorization': 'bearer ' + token
+            }
+        }
+
+        axios.post(`${URL}/public/requestservice`, {service, params}, config)
+            .then((result) => {
+                if (result.data.success) resolve(result.data.success.message);
+                else reject(result.data.error ? result.data.error.message : 'Unknown error');
+            })
+            .catch((error) => {
+                reject("Network error")
+            })
+    })
+}
+
+export const getServiceRequests = (token, service) => {
+    return new Promise((resolve, reject) => {
+        const config = {
+            headers: {
+                'authorization': 'bearer ' + token
+            }
+        }
+
+        axios.get(`${URL}/public/getrequests?service=${service}`, config)
+            .then((result) => {
+                if (result.data.requests) resolve(result.data.requests);
+                else reject(result.data.error ? result.data.error.message : 'Unknown error');
+            })
+            .catch((error) => {
+                reject("Network error")
+            })
+    })
+}

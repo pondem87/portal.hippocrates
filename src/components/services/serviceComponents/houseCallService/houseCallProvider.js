@@ -1,19 +1,28 @@
 import React, { useEffect, useState } from 'react';
 import { getHouseCallRegistration, registerHouseCall } from '../../../../functions/houseCallFunctions';
-import { resumeService, suspendService, updateServiceHours } from '../../../../functions/professionalFunctions';
+import { getAllAssignments, resumeService, suspendService, updateServiceHours } from '../../../../functions/professionalFunctions';
 import Loader from '../../../shared/Loader';
 import SetDaysAndHours, { getDaysAndHours } from '../../../shared/setDaysAndHours';
+import moment from 'moment';
 
 const HouseCallProvider = ({user}) => {
     const [loading, setLoading] = useState(true);
     const [registered, setRegistered] = useState(false);
     const [registration, setRegistration] = useState(null);
     const [editMode, setEditMode] = useState(false);
+    const [assignments, setAssignments] = useState();
+    const [pagination, setPagination] = useState({
+        page: 1,
+        pageSize: 10,
+        prev: false,
+        next: false
+    })
 
     const days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday', 'everyday'];
 
     useEffect(() => {
         checkRegistration();
+        getAssignments(0)
     }, [])
 
     const checkRegistration = async () => {
@@ -30,6 +39,29 @@ const HouseCallProvider = ({user}) => {
                 alert("Cannot open page: " + error)
             }
         }
+    }
+
+    const getAssignments = async (pageMove) => {
+        try {
+            let jobs = await getAllAssignments(user.token, 'housecall', pagination.page + pageMove, pagination.pageSize);
+            setAssignments(jobs);
+            setPagination(prev => ({
+                page: prev.page + pageMove,
+                pageSize: prev.pageSize,
+                prev: (prev.page + pageMove) > 1,
+                next: jobs.length >= prev.pageSize
+            }))
+        } catch (error) {
+            alert("Failed to load history")
+        }
+    }
+
+    const nextPage = () => {
+        getAssignments(1);
+    }
+
+    const prevPage = () => {
+        getAssignments(-1);
     }
 
     const [state, setState] = useState({
@@ -150,7 +182,7 @@ const HouseCallProvider = ({user}) => {
     } else if (registered) {
         return (
             <div className="row">
-                <div className="col-md-6 col-sm-12">
+                <div className="col-md-12 col-lg-5">
                     <h3>House call service information</h3>
                     <p>You are registered for house calls. We will contact you via your provided contacts for assignment of clients
                         within your scope and terms of engagement. More information will be communicated here and/or by other convenient means.
@@ -214,8 +246,50 @@ const HouseCallProvider = ({user}) => {
                         : <span />
                     } 
                 </div>
-                <div className="col-md-6 col-sm-12">
+                <div className="col-md-12 col-lg-7">
                     <h3>Service History</h3>
+                    <table className="table table-striped">
+                        <thead>
+                            <tr>
+                                <th scope="col">Date/Time</th>
+                                <th scope="col">Client</th>
+                                <th scope="col">Location</th>
+                                <th scope="col">Description</th>
+                                <th scope="col">Phone</th>
+                                <th scope="col">status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {
+                                assignments && assignments.map((assign) => {
+                                    return (
+                                        <tr>
+                                            <td>{moment(assign.assigned_at).format("ddd D MMM, HH:mm")}</td>
+                                            <td className="text-capitalize">{assign.client_name}</td>
+                                            <td>{JSON.parse(assign.service_params).location}</td>
+                                            <td>{JSON.parse(assign.service_params).location_description}</td>
+                                            <td>{JSON.parse(assign.service_params).phone}</td>
+                                            <td>
+                                                {
+                                                    assign.reassigned ? "Reassigned" :
+                                                        assign.fullfilled ? "Completed" :
+                                                            assign.paid ? "Paid and waiting" : "Awaiting payment"
+                                                }
+                                            </td>
+                                        </tr>
+                                    )
+                                })
+                            }
+                        </tbody>
+                    </table>
+                    {
+                        assignments && assignments.length === 0 ? <p>No activity to display</p> :
+                            <div className="text-center">
+                                <button onClick={prevPage} className="btn btn-info" disabled={!pagination.prev}>prev</button>
+                                <span className="font-weight-bold mx-3">Page {pagination.page}</span>
+                                <button onClick={nextPage} className="btn btn-info" disabled={!pagination.next}>next</button>
+                            </div>
+                    }
                 </div>
             </div>
         )

@@ -98,7 +98,9 @@ const ProfessionRegistration = ({user}) => {
                     </div>
                     <div className="col-md-6">
                         <h5 className="my-2">Supporting Documents</h5>
-                        <p>To complete verification upload 1 identity document (ID, passport or driver's licence) and valid practicing licences and any additional documents supporting your scope of practice as stipulated by regulatory bodies for your profession.</p>
+                        <p>To complete verification upload 1 identity document (ID, passport or driver's licence) and valid practicing licences and any additional documents supporting your scope of practice as stipulated by regulatory bodies for your profession.
+                            You can submit without documents and then upload documents later.
+                        </p>
                         <p>**Accepted file formats: pdf and jpg(jpeg) images<br />**The list of uploads can have more than 1 file. Click on the red 'x' to remove from list.</p>
                         <FileUploads files={files} addFile={addFile} removeFile={removeFile} />
                     </div>
