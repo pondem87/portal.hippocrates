@@ -250,7 +250,7 @@ const TelemedicineProvider = ({user}) => {
                             {
                                 assignments && assignments.map((assign) => {
                                     return (
-                                        <tr>
+                                        <tr key={assign.idassignment}>
                                             <td>{moment(assign.assigned_at).format("ddd D MMM, HH:mm")}</td>
                                             <td className="text-capitalize">{assign.client_name}</td>
                                             <td>{JSON.parse(assign.service_params).platform}</td>

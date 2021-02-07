@@ -56,7 +56,7 @@ const PaymentHistory = () => {
                             {
                                 transactions && transactions.map((transaction) => {
                                     return (
-                                        <tr>
+                                        <tr key={transaction.uuid}>
                                             <td>{moment(transaction.timestamp).format("ddd D MMM, HH:mm")}</td>
                                             <td>{transaction.method}</td>
                                             <td>{transaction.provider}</td>

@@ -94,13 +94,13 @@ const Pay = ({match}) => {
                 <div className="row justify-content-center">
                     <div className="col-lg-6 col-md-8 col-sm-12">
                         <h3>Pay for the following service</h3>
-                            <ul class="list-group">
-                                <li class="list-group-item">Service requested: <span className="text-capitalize font-weight-bold">{request.service_type}</span></li>
-                                <li class="list-group-item">Date of request: {new Date(request.created_at).toDateString()}</li>
+                            <ul className="list-group">
+                                <li className="list-group-item">Service requested: <span className="text-capitalize font-weight-bold">{request.service_type}</span></li>
+                                <li className="list-group-item">Date of request: {new Date(request.created_at).toDateString()}</li>
                                 {
-                                    Object.keys(JSON.parse(request.service_params)).map(key => {
+                                    Object.keys(JSON.parse(request.service_params)).map((key, i) => {
                                         return (
-                                            <li class="list-group-item"><span className="text-capitalize">{key}</span>: {JSON.parse(request.service_params)[key]}</li>
+                                            <li key={i} className="list-group-item"><span className="text-capitalize">{key}</span>: {JSON.parse(request.service_params)[key]}</li>
                                         )
                                     })
                                 }
@@ -118,24 +118,24 @@ const Pay = ({match}) => {
                                         :
                                         <form onSubmit={submitTransaction}>
                                             <div className="form-group">
-                                                <label for="operator">Choose wallet</label>
+                                                <label htmlFor="operator">Choose wallet</label>
                                                 <select className="form-control" id="operator" onChange={(e) => setOperator(e.target.value)} value={operator} >
                                                     <option value="ecocash">Ecocash</option>
                                                     <option value="onemoney">One Money</option>
                                                     <option value="telecash">Telecash</option>
                                                 </select>
                                             </div>
-                                            <div class="input-group mb-3">
-                                                <div class="input-group-prepend">
-                                                    <span class="input-group-text" id="basic-addon1">Email Address</span>
+                                            <div className="input-group mb-3">
+                                                <div className="input-group-prepend">
+                                                    <span className="input-group-text" id="basic-addon1">Email Address</span>
                                                 </div>
-                                                <input type="email" class="form-control" aria-label="email" aria-describedby="basic-addon1" onChange={(e) => setEmail(e.target.value)} value={email} required />
+                                                <input type="email" className="form-control" aria-label="email" aria-describedby="basic-addon1" onChange={(e) => setEmail(e.target.value)} value={email} required />
                                             </div>
-                                            <div class="input-group mb-3">
-                                                <div class="input-group-prepend">
-                                                    <span class="input-group-text" id="basic-addon2">Phone Number</span>
+                                            <div className="input-group mb-3">
+                                                <div className="input-group-prepend">
+                                                    <span className="input-group-text" id="basic-addon2">Phone Number</span>
                                                 </div>
-                                                <input type="text" class="form-control" aria-label="phonenumber" aria-describedby="basic-addon2" onChange={(e) => setPhoneNumber(e.target.value)} value={phoneNumber} required />
+                                                <input type="text" className="form-control" aria-label="phonenumber" aria-describedby="basic-addon2" onChange={(e) => setPhoneNumber(e.target.value)} value={phoneNumber} required />
                                             </div>
                                             <div className="text-center">
                                                 <button type="submit" className="btn btn-success">Begin Transaction</button>

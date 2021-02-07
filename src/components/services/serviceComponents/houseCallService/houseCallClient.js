@@ -118,17 +118,10 @@ const HouseCallClient = ({user}) => {
                     </thead>
                     <tbody>
                         {
-                            loading ?
-                                <div>
-                                    <div className="loader text-info text-center my-4">
-                                        <i className="fas fa-spinner fa-pulse fa-7x"></i>
-                                        <p className="font-weight-bold text-center">Loading...</p>
-                                    </div>
-                                </div> :
-                                requests.map((request) => {
+                            !loading && requests.map((request) => {
                                     if (request.processed === 0) {
                                         return (
-                                            <tr>
+                                            <tr key={request.idservice_requests}>
                                                 <td>{moment(request.created_at).format("ddd D, HH:mm")}</td>
                                                 <td>{JSON.parse(request.service_params).profession}</td>
                                                 <td>{JSON.parse(request.service_params).location}</td>
@@ -151,17 +144,10 @@ const HouseCallClient = ({user}) => {
                     </thead>
                     <tbody>
                         {
-                            loading ?
-                                <div>
-                                    <div className="loader text-info text-center my-4">
-                                        <i className="fas fa-spinner fa-pulse fa-7x"></i>
-                                        <p className="font-weight-bold text-center">Loading...</p>
-                                    </div>
-                                </div> :
-                                requests.map((request) => {
+                            !loading && requests.map((request) => {
                                     if (request.processed === 1 && request.fullfilled === 0 && request.reject === 0) {
                                         return (
-                                            <tr>
+                                            <tr key={request.idservice_requests}>
                                                 <td>{moment(request.created_at).format("ddd D, HH:mm")}</td>
                                                 <td>{JSON.parse(request.service_params).profession}</td>
                                                 <td>{JSON.parse(request.service_params).location}</td>
@@ -192,17 +178,10 @@ const HouseCallClient = ({user}) => {
                     </thead>
                     <tbody>
                         {
-                            loading ?
-                                <div>
-                                    <div className="loader text-info text-center my-4">
-                                        <i className="fas fa-spinner fa-pulse fa-7x"></i>
-                                        <p className="font-weight-bold text-center">Loading...</p>
-                                    </div>
-                                </div> :
-                                requests.map((request) => {
+                            !loading && requests.map((request) => {
                                     if (request.fullfilled === 1 || request.reject === 1) {
                                         return (
-                                            <tr>
+                                            <tr key={request.idservice_requests}>
                                                 <td>{moment(request.created_at).format("ddd D, HH:mm")}</td>
                                                 <td>{JSON.parse(request.service_params).profession}</td>
                                                 <td>{JSON.parse(request.service_params).location}</td>
@@ -217,7 +196,16 @@ const HouseCallClient = ({user}) => {
                                 })
                         }
                     </tbody>
-                </table>               
+                </table>
+                {
+                    loading ?
+                        <div>
+                            <div className="loader text-info text-center my-4">
+                                <i className="fas fa-spinner fa-pulse fa-7x"></i>
+                                <p className="font-weight-bold text-center">Loading...</p>
+                            </div>
+                        </div> : <span />
+                }              
             </div>
         </div>
     )
