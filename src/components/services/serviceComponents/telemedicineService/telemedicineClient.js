@@ -50,13 +50,21 @@ const TelemedicineClient = ({user}) => {
         } catch (error) {
             alert("Request failed: " + error)
         } finally {
-            setRequesting(false)
+            setRequesting(false);
+            getRequests();
+            setForm({
+                profession: '',
+                platform: '',
+                platform_id: '',
+                phone: '',
+                reason: ''
+            });
         }
     }
 
     return (
         <div className="row my-2">
-            <div className="col-md-12 col-lg-5">
+            <div className="col-md-12 col-lg-5 my-3">
                 {
                     requesting ? 
                         <div>
@@ -105,7 +113,7 @@ const TelemedicineClient = ({user}) => {
                         </div>
                 }              
             </div>
-            <div className="col-md-12 col-lg-7">
+            <div className="col-md-12 col-lg-7 my-3">
                 <h3>My Requests</h3>
                 <h4>Pending</h4>
                 <table className="table table-striped">

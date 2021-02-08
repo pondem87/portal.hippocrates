@@ -11,6 +11,8 @@ debug.log
 
 # production
 /build
+/devop
+devop.ps1
 
 # misc
 .DS_Store

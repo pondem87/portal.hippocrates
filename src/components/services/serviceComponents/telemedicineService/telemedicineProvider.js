@@ -176,7 +176,7 @@ const TelemedicineProvider = ({user}) => {
     } else if (registered) {
         return (
             <div className="row">
-                <div className="col-md-12 col-lg-5">
+                <div className="col-md-12 col-lg-5 my-3">
                     <h3>Telemedicine service information</h3>
                     <p>You are registered for telemedicine. We will contact you via your provided contacts for assignment of clients
                         within your scope and terms of engagement. More information will be communicated here and/or by other convenient means.
@@ -233,7 +233,7 @@ const TelemedicineProvider = ({user}) => {
                         : <span />
                     } 
                 </div>
-                <div className="col-md-12 col-lg-7">
+                <div className="col-md-12 col-lg-7 my-3">
                     <h3>Service History</h3>
                     <table className="table table-striped">
                         <thead>

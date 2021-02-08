@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 const Services = () => {
     return (
         <div className="row">
-            <div className="col-lg-3 col-md-4 col-sm-6">
+            <div className="col-lg-3 col-md-4 col-sm-12 my-2">
                 <div className="card">
                     <div className="card-body">
                         <h5 className="card-title">House Call</h5>
@@ -14,7 +14,7 @@ const Services = () => {
                     </div>
                 </div>
             </div>
-            <div className="col-lg-3 col-md-4 col-sm-6">
+            <div className="col-lg-3 col-md-4 col-sm-12 my-2">
                 <div className="card">
                     <div className="card-body">
                         <h5 className="card-title">Telemedicine</h5>
@@ -24,7 +24,7 @@ const Services = () => {
                     </div>
                 </div>
             </div>
-            <div className="col-lg-3 col-md-4 col-sm-6">
+            <div className="col-lg-3 col-md-4 col-sm-12 my-2">
                 <div className="card">
                     <div className="card-body">
                         <h5 className="card-title">Locums</h5>
@@ -34,7 +34,7 @@ const Services = () => {
                     </div>
                 </div>
             </div>
-            <div className="col-lg-3 col-md-4 col-sm-6">
+            <div className="col-lg-3 col-md-4 col-sm-12 my-2">
                 <div className="card">
                     <div className="card-body">
                         <h5 className="card-title">Q And A </h5>
