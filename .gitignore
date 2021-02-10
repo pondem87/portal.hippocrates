@@ -13,6 +13,7 @@ debug.log
 /build
 /devop
 devop.ps1
+/src/variables.js
 
 # misc
 .DS_Store
