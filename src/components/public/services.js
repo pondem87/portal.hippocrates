@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import {Link} from 'react-router-dom';
 
 const Services = () => {
     return (
@@ -10,7 +10,7 @@ const Services = () => {
                         <h5 className="card-title">Live Chat</h5>
                         <h6 className="card-subtitle mb-2 text-muted">Instant Medical Advice</h6>
                         <p className="card-text">Get medical advice on which service best suits your current situation through our chat service</p>
-                        <Link to="/services/livechat" className="card-link">Start a chat now!</Link>
+                        <Link to="/services/livechat" target={"_blank"} className="card-link">Start a chat now!</Link>
                     </div>
                 </div>
             </div>

@@ -11,6 +11,7 @@ const HouseCallClient = ({user}) => {
         location_description: '',
         reason: ''
     });
+    
     const [requesting, setRequesting] = useState(false);
     const [requests, setRequests] = useState([]);
     const [loading, setLoading] = useState(true);

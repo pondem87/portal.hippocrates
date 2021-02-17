@@ -8,6 +8,7 @@ import { useHistory } from 'react-router-dom';
 import TelemedicineProvider from './telemedicineService/telemedicineProvider';
 import TelemedicineClient from './telemedicineService/telemedicineClient';
 import LocumWorker from './locumsService/locumWorker';
+import LiveChatClient from './liveChat/liveChatClient';
 
 const ServicesRoot = (props) => {
     const user = useContext(UserContext);
@@ -32,6 +33,10 @@ const ServicesRoot = (props) => {
             break;
         case 'locums':
             if (user.account_type === 'PROFESSIONAL') service = <LocumWorker user={user} />
+            else service = <UnimplementedService />
+            break;
+        case 'livechat':
+            if (user.account_type === 'CLIENT') service = <LiveChatClient user={user} />
             else service = <UnimplementedService />
             break;
         default:
